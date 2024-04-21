@@ -29,7 +29,14 @@ main.py
 
 ## Files
 
-### src/__init__.py
+### requirements.txt
+Contains list of dependencies to be installed before running the project.
+
+To install
+
+    pip install -r requirements.txt
+
+### src/\_\_init\_\_.py
 Contains basic functions and declarations as follows:
 
 ```py
@@ -58,7 +65,6 @@ Contains function for decryption
 import cirq
 from . import basis_gates, get_qubits
 
-
 def decrypt_message(encrypted_circuit, num_bits, private_key, bases):
     qubits = get_qubits(num_bits)
 
@@ -66,14 +72,11 @@ def decrypt_message(encrypted_circuit, num_bits, private_key, bases):
     for idx in range(num_bits):
         basis_value = bases[idx]
         basis_gate = basis_gates[basis_value]
-
         qubit = qubits[idx]
         circuit.append(basis_gate(qubit))
 
     circuit.append(cirq.measure(qubits, key=private_key))
-
     bb84_circuit = encrypted_circuit + circuit
-
     sim = cirq.Simulator()
     results = sim.run(bb84_circuit)
     key = results.measurements[private_key][0]
@@ -88,7 +91,6 @@ Contains function for encryption
 import cirq
 from . import encode_gates, basis_gates, get_qubits
 
-
 def encrypt_message(message_bits, num_bits, bases):
     qubits = get_qubits(num_bits)
 
@@ -96,22 +98,14 @@ def encrypt_message(message_bits, num_bits, bases):
     for idx in range(num_bits):
         encode_value = message_bits[idx]
         encode_gate = encode_gates[encode_value]
-
         basis_value = bases[idx]
         basis_gate = basis_gates[basis_value]
-
         qubit = qubits[idx]
         circuit.append(encode_gate(qubit))
         circuit.append(basis_gate(qubit))
 
     return circuit
 ```
-
-### requirements.txt
-
-To install
-
-    pip install -r requirements.txt
 
 ### main.py
 Contains the driver code to run the project and manage inputs.
